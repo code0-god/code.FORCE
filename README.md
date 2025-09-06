@@ -29,7 +29,7 @@ The project is designed to serve as both a **hands-on practice environment** for
 ```makefile
 code.GAP/
 ├─ build.sh                  # Build script (SW default, HW optional)
-├─ Makefile                  # SW/HW toggle (MATX\_HAS\_SW / MATX\_HAS\_HW)
+├─ Makefile                  # SW/HW toggle (MATX_HAS_SW / MATX_HAS_HW)
 ├─ README.md
 ├─ include/
 │  └─ matx/
