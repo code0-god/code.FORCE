@@ -1,103 +1,128 @@
-# **code.GAP**  
+# **code.GAP**
+
 **GEMV Accelerator Project**  
-*"Experimenting with GEMV acceleration &mdash; from CPU baselines to hardware co-design."*
+*"Experimenting with GEMV acceleration — from CPU baselines to hardware co-design."*
 
 ---
 
 ## **Overview**
-`code.GAP` is a study-oriented project focused on **GEMV (General Matrix-Vector Multiplication)**.  
-It explores different implementations&mdash;from **naive CPU baselines** to **tiled optimizations** and **systolic-array hardware simulations**&mdash;to learn architectural trade-offs in matrix-vector computation.  
+`code.GAP` is a **practice-oriented project** for exploring **GEMV (General Matrix-Vector Multiplication)** acceleration.  
+It is designed both as a **learning companion for computer architecture courses** (MIPS, Arm NEON, RISC-V concepts) and as a **foundation for accelerator co-design experiments**.
 
-The project is designed to serve as both a **hands-on practice environment** for computer architecture concepts and a foundation for future **accelerator co-design experiments**.
+The project focuses on:
+- Building a reproducible **software/hardware stack** for GEMV  
+- Practicing optimization in **RISC environments** (Arm A1, extensible to RISC-V)  
+- Understanding trade-offs between **CPU baselines, tiled kernels, and systolic-array models**  
+- Producing benchmarks and correctness tests for **portfolio and research use**
 
 ---
 
-## **Current Features**
-- **Tensor2D class** with stride/view support  
-- **Software kernels**
-  - Naive GEMV
-  - Tiled GEMV (BM/BN/BK parameters)  
-- **Hardware kernel (optional)**
-  - Systolic array simulator (output-stationary model)  
-- **Measurement utilities**
-  - Cycle/time measurement using `chrono` (and optional RDTSC)  
-  - Correctness check with reference results  
+## **Layered Architecture**
+- **Core (`include/gap/core`, `src/core`)**  
+  - Minimal public interfaces (error types, backend registry)
+
+- **Tensor (`include/gap/tensor`)**  
+  - Tensor2D handle with stride/view support, RAII memory management
+
+- **Backend (`include/gap/backend`, `src/backend/*`)**  
+  - Resource provider (allocate, deallocate, fill, copy)  
+  - Optional optimized GEMV kernels (e.g., NEON, AVX, RTL hooks)  
+  - *Multiple backends exist side by side (cpu.scalar, cpu.neon, cpu.avx, sim, hw.fpga)*
+
+- **Algorithm (`src/alg`)**  
+  - GEMV entry point (`gemv_dispatch`)  
+  - Includes **software reference kernels** (naive, blocking, tiling, systolic-SW)  
+  - Falls back to SW kernels if the selected backend does not provide GEMV
+
+- **App (`src/app`)**  
+  - CLI benchmark harness (parses flags, selects backends/kernels, measures performance)
+
+- **Test (`test`)**  
+  - Unit tests, golden correctness tests, performance runs
 
 ---
 
 ## **Project Structure**
 ```makefile
 code.GAP/
-├─ build.sh                  # Build script (SW default, HW optional)
-├─ Makefile                  # SW/HW toggle (MATX_HAS_SW / MATX_HAS_HW)
-├─ README.md
-├─ include/
-│  └─ matx/
-│     ├─ params.hpp          # Global parameters (BM/BN/BK, S/R/Kc)
-│     ├─ tensor.hpp          # 2D Tensor class
-│     └─ kernels/
-│        ├─ sw.hpp           # SW kernels (naive, tiled)
-│        └─ hw_systolic.hpp  # HW systolic simulator (optional)
-├─ apps/
-│  └─ bench_matmul.cpp       # Main runner: run kernels, measure cycles/time
-└─ tests/
-└─ correctness/
-├─ test_small.cpp      # Small case correctness tests
-└─ test_random.cpp     # Random input validation
+├─ scripts/
+│   └─ build.sh                 # Build script (backend toggles)
+│
+├─ include/gap/
+│   ├─ core/                    # Core APIs (errors, registry)
+│   ├─ backend/                 # Backend interface (IBackend)
+│   └─ tensor/                  # Tensor handle (metadata, stride/view)
+│
+├─ src/
+│   ├─ core/                    # Registry implementation
+│   ├─ backend/                 # Multiple backend implementations
+│   │   ├─ cpu_scalar/          # Portable scalar baseline
+│   │   ├─ cpu_neon/            # Arm NEON optimized (A1)
+│   │   ├─ cpu_avx/             # x86 AVX optimized (optional, test only)
+│   │   ├─ sim/                 # Systolic simulator backend (optional)
+│   │   └─ hw_fpga/             # FPGA/RTL backend hooks (optional)
+│   │
+│   ├─ alg/                     # GEMV dispatcher + SW reference kernels
+│   │   ├─ gemv.hpp / gemv.cpp  # Dispatch logic (SW/HW/Auto)
+│   │   ├─ gemv_naive.cpp
+│   │   ├─ gemv_blocking.cpp
+│   │   ├─ gemv_tiling.cpp
+│   │   └─ gemv_systolic_sw.cpp
+│   │
+│   └─ app/
+│       └─ bench.cpp            # CLI benchmark runner
+│
+└─ test/
+    ├─ unit_tensor.cpp          # Tensor unit tests
+    ├─ unit_backend.cpp         # Backend primitive tests
+    ├─ golden_gemv.cpp          # GEMV correctness validation
+    └─ perf_gemv.cpp            # GEMV performance benchmark
 ```
 
 ---
 
 ## **Build & Run**
-
 ```bash
-# Default: SW kernels only (CPU fallback)
-./build.sh
+# Default build (scalar backend only)
+bash scripts/build.sh
 
-# With HW simulator (systolic model)
-HW=1 ./build.sh
+# Run benchmark (example: 512x512 GEMV)
+./build/gap_app --backend=cpu.scalar --kernel=sw.naive --M=512 --N=512
+
+# Switch backend (Arm NEON, if compiled)
+./build/gap_app --backend=cpu.neon --kernel=hw --M=2048 --N=2048
 ```
 
-Example runs:
+Run all tests:
 
 ```bash
-# Run tiled GEMV on CPU
-./build/bench_matmul --kernel sw.tiled --M 512 --N 512 --K 512
-
-# Run systolic simulator
-./build/bench_matmul --kernel hw.systolic --M 256 --N 256 --K 256 --S 16 --R 16 --Kc 32
+ctest --test-dir build -V
 ```
 
 ---
 
-## **Future Extensions**
+## **Roadmap**
+- **Phase 0–1 (Practice)**
+  - Naive / blocking / tiling GEMV in pure software
 
-- **Software kernels**
-  - Blocked / Register tiling
-  - Cache-oblivious recursion
-  - OpenMP multithreading
-  - SIMD (AVX, NEON)
-- **Hardware models**
+- **Phase 2 (Optimization)**
+  - CPU SIMD backends
+  - Arm A1: NEON (`cpu.neon`)
+  - x86: AVX (`cpu.avx`, optional)
 
-  - Variants of systolic arrays (output-stationary, weight-stationary, row-stationary)
-  - RTL integration (Verilog/Bluespec → Verilator co-simulation)
-- **Analysis tools**
+- **Phase 3 (Modeling)**
+  - Software systolic-array simulator (output-/row-/weight-stationary)
 
-  - Cycle count / CPI calculation
-  - PE utilization metrics
-  - Memory traffic measurement
-- **Tests & Benchmarks**
-
-  - Correctness: small/random testcases
-  - Performance: BM/BN/BK and S/R/Kc sweeps
+- **Phase 4 (Hardware)**
+  - FPGA/RTL systolic GEMV engine, integrated via `backend.hw_fpga`
 
 ---
 
 ## **Learning Outcomes**
-
-- Apply **computer architecture concepts** (pipelines, parallelism, locality) in code
-- Compare **CPU baseline vs. accelerator models** to understand design trade-offs
-- Prepare for **co-design practice**, from high-level simulation to RTL integration
+- Apply **computer architecture concepts** (pipelines, SIMD, locality) in practice
+- Compare **CPU baselines vs. accelerator models** to understand design trade-offs
+- Gain **hands-on RISC optimization experience** (Arm NEON, extensible to RISC-V)
+- Build a **portfolio-ready framework** for accelerator co-design research
 
 ---
 
