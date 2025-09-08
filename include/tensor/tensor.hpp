@@ -9,6 +9,4 @@ class tensor {
 		int ne[2];
 		int nb[2];
 		void* data_ = nullptr;
-
-		
 };
