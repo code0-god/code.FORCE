@@ -1,0 +1,37 @@
+# ---- CMake build artifacts ----
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/*.cmake
+
+# ---- Compiled object files & libraries ----
+*.o
+*.obj
+*.lo
+*.la
+*.al
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# ---- Executables ----
+*.exe
+*.out
+*.app
+/test_gap
+
+# ---- Editor/IDE specific ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ---- Logs & temp ----
+*.log
+*.tmp
