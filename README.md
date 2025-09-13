@@ -53,23 +53,28 @@ code.GAP/
 │
 ├─ include/
 │  ├─ core/
-│  │  ├─ types.hpp          # Core contracts (DType, MathOp, GemvArgs)
-│  │  └─ backend.hpp        # IBackend abstract interface
+│  │  ├─ types.hpp            # Core contracts (DType, MathOp, GemvArgs)
+│  │  ├─ backend.hpp          # IBackend abstract interface
+│  │  └─ backend_factory.hpp  # Declares the backend factory functions
 │  └─ tensor/
-│     ├─ tensor.hpp         # Tensor<T> handle declaration
-│     └─ tensor.tpp         # Tensor<T> template implementation
+│     ├─ tensor.hpp           # Tensor<T> handle declaration
+│     └─ tensor.tpp           # Tensor<T> template implementation
 │
 ├─ src/
+│  ├─ core/
+│  │  └─ backend_factory.cpp  # Implements the backend registry and factory
 │  ├─ backend/
-│  │  ├─ cpu_scalar/        # Portable scalar baseline
-│  │  ├─ cpu_neon/          # Arm NEON optimized backend
-│  │  ├─ cpu_avx/           # x86 AVX optimized backend
-│  │  ├─ sim/               # Systolic array simulator backend
-│  │  └─ hw_fpga/           # Hooks for the FPGA backend
+│  │  ├─ cpu_scalar/          # Portable scalar baseline
+│  │  │  ├─ cpu_scalar_backend.hpp
+│  │  │  └─ cpu_scalar_backend.cpp
+│  │  ├─ cpu_neon/            # Arm NEON optimized backend
+│  │  ├─ cpu_avx/             # x86 AVX optimized backend
+│  │  ├─ sim/                 # Systolic array simulator backend
+│  │  └─ hw_fpga/             # Hooks for the FPGA backend
 │  ├─ alg/
-│  │  ├─ gemv_dispatch.cpp  # Dispatches to backend or SW fallbacks
-│  │  ├─ gemv_naive.cpp     # Naive software kernel
-│  │  ├─ gemv_tiled.cpp     # Tiled/blocked software kernel
+│  │  ├─ gemv_dispatch.cpp    # Dispatches to backend or SW fallbacks
+│  │  ├─ gemv_naive.cpp       # Naive software kernel
+│  │  ├─ gemv_tiled.cpp       # Tiled/blocked software kernel
 │  │  └─ gemv_systolic_sw.cpp # Systolic array software model
 │  └─ app/
 │     └─ main.cpp           # CLI benchmark runner
