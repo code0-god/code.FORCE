@@ -2,7 +2,7 @@
 #include "core/types.hpp"
 #include <string>
 
-namespace gap
+namespace ace
 {
     class IBackend
     {

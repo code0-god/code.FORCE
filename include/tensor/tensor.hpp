@@ -4,7 +4,7 @@
 
 inline constexpr int GAP_DIMS = 2;
 
-namespace gap
+namespace ace
 {
 	/* Tensor: lightweight tensor handle (view by default).
 		- No internal allocation in hot paths.

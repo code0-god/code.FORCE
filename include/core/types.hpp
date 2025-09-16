@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <string>
 
-namespace gap {
+namespace ace {
     // Data Type, Operations, Sparsity pattern contract
     enum class DType { F32, F16, BF16, I8, I32 };
     enum class Ops { FP32, TF32, FP16, BF16, ACC };

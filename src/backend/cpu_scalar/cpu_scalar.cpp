@@ -1,7 +1,10 @@
 #include "core/ibackend.hpp"
 
-class CpuScalarBackend : gap::IBackend
+namespace ace
 {
-public:
-private:
-};
+    class CpuScalarBackend : IBackend
+    {
+    public:
+    private:
+    };
+}

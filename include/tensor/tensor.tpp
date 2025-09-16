@@ -11,7 +11,7 @@
 #include <cxxabi.h> // abi::__cxa_demangle
 #endif
 
-namespace gap
+namespace ace
 {
     template <typename T>
     Tensor<T>::Tensor(const std::string &name, size_t rows, size_t cols)
