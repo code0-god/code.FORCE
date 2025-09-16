@@ -1,12 +1,12 @@
-# **code.FORCE**
-**Full-stack Optimization and Reconfigurable Co-design Environment**  
+# **code.ACE**
+**AI/ML Accelerator Co-design Environment**  
 *"Experimenting with GEMV acceleration — from CPU baselines and Roofline models to hardware co-design."*
 
 ---
 
 ## **Overview**
 
-`code.FORCE` is a **practice-oriented project** for exploring **GEMV (General Matrix-Vector Multiplication)** acceleration through comprehensive **SW/HW co-design**. It is designed both as a **learning companion for computer architecture courses** and as a **foundation for accelerator co-design experiments** involving optimization techniques and custom hardware.
+`code.ACE` is a **practice-oriented project** for exploring **GEMV (General Matrix-Vector Multiplication)** acceleration through comprehensive **SW/HW co-design**. It is designed both as a **learning companion for computer architecture courses** and as a **foundation for accelerator co-design experiments** involving optimization techniques and custom hardware.
 
 The project focuses on:
 - Building a reproducible **software/hardware stack** for performance analysis based on the Roofline model.  
@@ -47,7 +47,7 @@ The project is organized by layers, with a clear distinction between public inte
 
 
 ```
-code.GAP/
+code.ACE/
 ├─ scripts/
 │  └─ build.sh
 │
@@ -93,11 +93,11 @@ code.GAP/
 bash scripts/build.sh
 
 # Example 1: Run a FP32 benchmark using the tiled software kernel
-./build/gap_app --backend=cpu.scalar --kernel=sw.tiled \
+./build/ace_app --backend=cpu.scalar --kernel=sw.tiled \
     --dtype=f32 --math=Fp32 --M=4096 --N=4096
 
 # Example 2: Run an INT8 benchmark with 2:4 structured sparsity
-./build/gap_app --backend=cpu.scalar --kernel=sw.tiled \
+./build/ace_app --backend=cpu.scalar --kernel=sw.tiled \
     --dtype=i8 --math=Int8xInt8_To_Int32 --sparsity=block2_4 \
     --M=4096 --N=4096 --runs=30 --warmup=5
 ```
