@@ -2,11 +2,11 @@
 #include <string>
 #include <cstddef>
 
-#define GAP_DIMS 2
+inline constexpr int GAP_DIMS = 2;
 
 namespace gap
 {
-	/* Tensor: lightweight 2D tensor handle (view by default).
+	/* Tensor: lightweight tensor handle (view by default).
 		- No internal allocation in hot paths.
 		- Backend attaches an externally-allocated buffer via attach().
 		- If a deleter is provided, Tensor becomes owning and will call it on destruction. */

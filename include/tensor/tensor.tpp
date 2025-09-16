@@ -4,6 +4,8 @@
 #include <utility> // std::move
 #include <memory>  // std::unique_ptr
 #include <cstdlib> // std::free
+#include <cassert>
+#include <cstdint>
 
 #ifdef __GNUG__
 #include <cxxabi.h> // abi::__cxa_demangle
