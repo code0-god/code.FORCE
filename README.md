@@ -1,13 +1,12 @@
-# **code.GAP**
-
-**GEMV Accelerator Project**  
+# **code.FORCE**
+**Full-stack Optimization and Reconfigurable Co-design Environment**  
 *"Experimenting with GEMV acceleration — from CPU baselines and Roofline models to hardware co-design."*
 
 ---
 
 ## **Overview**
-`code.GAP` is a **practice-oriented project** for exploring **GEMV (General Matrix-Vector Multiplication)** acceleration.  
-It is designed both as a **learning companion for computer architecture courses** and as a **foundation for accelerator co-design experiments** involving quantization, sparsity, and custum hardware.
+
+`code.FORCE` is a **practice-oriented project** for exploring **GEMV (General Matrix-Vector Multiplication)** acceleration through comprehensive **SW/HW co-design**. It is designed both as a **learning companion for computer architecture courses** and as a **foundation for accelerator co-design experiments** involving optimization techniques and custom hardware.
 
 The project focuses on:
 - Building a reproducible **software/hardware stack** for performance analysis based on the Roofline model.  
@@ -45,6 +44,7 @@ The project is designed around a "Contract"-based architecture to ensure clean s
 
 ## **Project Structure**
 The project is organized by layers, with a clear distinction between public interfaces (`include`) and implementations (`src`).
+
 
 ```
 code.GAP/
